@@ -1,0 +1,10 @@
+{
+	"id": "fox-finance",
+	"name": "狐の财富系统",
+	"version": "0.5.0",
+	"minAppVersion": "1.4.0",
+	"description": "🌲 狐の财富森林 — 基于账本文件的个人财富管理系统",
+	"author": "小狐",
+	"authorUrl": "",
+	"isDesktopOnly": false
+}

@@ -1,0 +1,21 @@
+{
+	"name": "fox-finance",
+	"version": "0.3.0",
+	"description": "Fox Finance — 狐の财富森林",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "node esbuild.config.mjs production"
+	},
+	"keywords": [],
+	"author": "小狐",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^20.10.0",
+		"builtin-modules": "^3.3.0",
+		"esbuild": "^0.19.8",
+		"obsidian": "^1.4.11",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.2"
+	}
+}

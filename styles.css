@@ -1,0 +1,1226 @@
+/* =========================================================
+   Fox Finance — 狐の财富森林 样式
+   星空森林风 · 透明玻璃卡片 · 深色主题
+   ========================================================= */
+
+/* ─── CSS Variables ──────────────────────────────────── */
+
+:root {
+  --fox-bg-glass: rgba(255, 255, 255, 0.04);
+  --fox-bg-glass-hover: rgba(255, 255, 255, 0.07);
+  --fox-bg-glass-strong: rgba(255, 255, 255, 0.06);
+  --fox-border-glass: rgba(255, 255, 255, 0.06);
+  --fox-text-primary: rgba(255, 255, 255, 0.9);
+  --fox-text-secondary: rgba(255, 255, 255, 0.5);
+  --fox-text-muted: rgba(255, 255, 255, 0.3);
+  --fox-accent: #a78bfa;
+  --fox-accent-dim: rgba(167, 139, 250, 0.15);
+  --fox-green: #34d399;
+  --fox-red: #f87171;
+  --fox-amber: #f59e0b;
+  --fox-blue: #60a5fa;
+  --fox-radius: 12px;
+  --fox-radius-sm: 8px;
+  --fox-transition: 0.2s ease;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+
+.fox-finance-view::-webkit-scrollbar {
+  width: 6px;
+}
+.fox-finance-view::-webkit-scrollbar-track {
+  background: transparent;
+}
+.fox-finance-view::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+
+/* ─── View Container ─────────────────────────────────── */
+
+.fox-finance-view {
+  --fox-bg-glass: rgba(255, 255, 255, 0.04);
+  --fox-bg-glass-hover: rgba(255, 255, 255, 0.07);
+
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 24px 0;
+  color: var(--fox-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ─── Section Label ──────────────────────────────────── */
+
+.fox-section-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.55);
+  margin: 20px 0 8px 4px;
+  user-select: none;
+}
+
+/* ─── Top Bar ────────────────────────────────────────── */
+
+.fox-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.fox-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fox-logo-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.95;
+  transition: all var(--fox-transition);
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-logo-icon:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(167,139,250,0.5));
+}
+
+.fox-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fox-accent);
+  letter-spacing: 1px;
+}
+
+.fox-mode-pill {
+  margin-left: auto;
+  padding: 4px 14px;
+  font-size: 12px;
+  color: #c4b5fd;
+  background: var(--fox-accent-dim);
+  border: 0.5px solid rgba(108, 99, 255, 0.3);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background var(--fox-transition);
+}
+.fox-mode-pill:hover {
+  background: rgba(108, 99, 255, 0.25);
+}
+
+.fox-level-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+  border: 0.5px solid rgba(251, 191, 36, 0.2);
+  border-radius: 6px;
+}
+
+.fox-level-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: all var(--fox-transition);
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-level-pill:hover .fox-level-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(251,191,36,0.5));
+}
+
+.fox-star-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.15);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--fox-transition);
+}
+.fox-star-btn:hover {
+  color: var(--fox-amber);
+  border-color: rgba(251,191,36,0.4);
+  background: rgba(251,191,36,0.08);
+}
+.fox-star-active {
+  color: var(--fox-accent) !important;
+  border-color: rgba(167,139,250,0.4) !important;
+  background: rgba(167,139,250,0.12) !important;
+}
+
+/* ─── 金额隐藏模式 ────────────────────────────────── */
+
+.fox-amounts-hidden .fox-card-amount,
+.fox-amounts-hidden .fox-tx-amount,
+.fox-amounts-hidden .fox-card-change,
+.fox-amounts-hidden .fox-card-detail,
+.fox-amounts-hidden .fox-review-summary-income,
+.fox-amounts-hidden .fox-review-summary-expense,
+.fox-amounts-hidden .fox-review-summary-net,
+.fox-amounts-hidden .fox-review-summary-rate,
+.fox-amounts-hidden .fox-review-budget-text,
+.fox-amounts-hidden .fox-review-acct-bal,
+.fox-amounts-hidden .fox-review-acct-income,
+.fox-amounts-hidden .fox-review-acct-expense,
+.fox-amounts-hidden .fox-review-acct-change {
+  filter: blur(7px);
+  user-select: none;
+}
+
+/* ─── Cards Row ──────────────────────────────────────── */
+
+.fox-cards-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 2fr 1.1fr 1.1fr 1.1fr;
+  gap: 12px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+/* ─── Glass Card ─────────────────────────────────────── */
+
+.fox-card {
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background var(--fox-transition);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fox-card:hover {
+  background: var(--fox-bg-glass-hover);
+}
+
+.fox-card-center {
+  border-color: rgba(108, 99, 255, 0.2);
+  background: rgba(108, 99, 255, 0.06);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px 16px;
+}
+.fox-card-center:hover {
+  background: rgba(108, 99, 255, 0.1);
+}
+
+.fox-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fox-card-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: all var(--fox-transition);
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-card:hover .fox-card-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px var(--fox-accent));
+}
+
+.fox-card-title {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.fox-card-amount {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.fox-amount-cash { color: var(--fox-green); }
+.fox-amount-invest { color: var(--fox-accent); }
+.fox-amount-budget { color: var(--fox-amber); }
+.fox-amount-growth { color: var(--fox-blue); }
+.fox-amount-center { color: white; font-size: 30px; }
+
+.fox-card-detail {
+  font-size: 10px;
+  color: var(--fox-text-muted);
+  line-height: 1.6;
+  margin-top: auto;
+}
+
+.fox-card-change {
+  font-size: 11px;
+  color: var(--fox-green);
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.fox-detail-item {
+  white-space: nowrap;
+}
+
+/* ─── Progress Bar ────────────────────────────────────── */
+
+.fox-progress-bar {
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.fox-progress-fill {
+  height: 100%;
+  background: var(--fox-amber);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ─── Actions Bar ──────────────────────────────────────── */
+
+.fox-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.fox-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: var(--fox-radius-sm);
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  font-family: inherit;
+  white-space: nowrap;
+}
+.fox-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+}
+
+.fox-btn-primary {
+  background: #6c63ff;
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+.fox-btn-primary:hover {
+  background: #7c73ff;
+  color: white;
+}
+
+.fox-btn-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.7;
+  transition: all var(--fox-transition);
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-btn:hover .fox-btn-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));
+}
+.fox-btn-primary .fox-btn-icon {
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-btn-primary:hover .fox-btn-icon {
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
+}
+
+/* ─── Transaction Panel ────────────────────────────────── */
+
+.fox-tx-panel {
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  flex: 1;
+  min-height: 120px;
+}
+
+.fox-finance-view .fox-tx-header {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: 16px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 0.5px solid var(--fox-border-glass);
+}
+
+.fox-finance-view .fox-tx-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: 16px;
+  padding: 9px 16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.03);
+  transition: background var(--fox-transition);
+  align-items: center;
+}
+.fox-finance-view .fox-tx-row:last-child {
+  border-bottom: none;
+}
+.fox-finance-view .fox-tx-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.fox-tx-cell {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fox-tx-header .fox-tx-cell {
+  font-size: 10px;
+  color: var(--fox-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fox-tx-amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.fox-tx-amount.negative { color: var(--fox-red); }
+.fox-tx-amount.positive { color: var(--fox-green); }
+
+.fox-tx-type-income { color: var(--fox-green); }
+.fox-tx-type-expense { color: var(--fox-red); }
+.fox-tx-type-transfer { color: var(--fox-amber); }
+.fox-tx-type-investment_in { color: var(--fox-accent); }
+.fox-tx-type-investment_return { color: var(--fox-green); }
+.fox-tx-type-refund { color: var(--fox-blue); }
+.fox-tx-type-balance_adjust { color: var(--fox-amber); }
+
+.fox-tx-note {
+  color: var(--fox-text-muted);
+  font-size: 11px;
+}
+
+.fox-tx-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--fox-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ─── Footer ──────────────────────────────────────────── */
+
+.fox-footer-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.fox-footer-tab {
+  padding: 4px 14px;
+  font-size: 13px;
+  color: var(--fox-text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all var(--fox-transition);
+}
+.fox-footer-tab:hover {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.8);
+}
+.fox-footer-tab-active {
+  color: var(--fox-accent);
+  font-weight: 600;
+}
+
+.fox-footer-wolf {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  opacity: 0.3;
+  margin-left: auto;
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  filter: drop-shadow(0 0 0 transparent);
+}
+.fox-footer-wolf:hover {
+  opacity: 0.8;
+  filter: drop-shadow(0 0 8px rgba(167,139,250,0.4));
+}
+
+/* ─── Modal ──────────────────────────────────────────── */
+
+.fox-finance-modal {
+  --modal-width: 420px;
+  background: #1a1f2e !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: var(--fox-radius);
+}
+.fox-finance-modal .modal-content {
+  padding: 0 20px 20px;
+  background: transparent;
+}
+.fox-finance-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fox-accent);
+  margin: 0 0 16px;
+  padding: 20px 20px 0;
+}
+.fox-finance-modal .setting-item {
+  border-top: none;
+  padding: 8px 0;
+  background: transparent;
+}
+.fox-finance-modal .setting-item-info {
+  min-width: 0;
+}
+.fox-finance-modal .setting-item-name {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7) !important;
+}
+.fox-finance-modal input,
+.fox-finance-modal select {
+  background: rgba(255,255,255,0.12) !important;
+  border: 0.5px solid rgba(255,255,255,0.15) !important;
+  border-radius: 6px;
+  color: #ffffff !important;
+  font-size: 13px;
+  padding: 5px 10px;
+}
+.fox-finance-modal input:focus,
+.fox-finance-modal select:focus {
+  border-color: var(--fox-accent) !important;
+  box-shadow: 0 0 0 1px rgba(167,139,250,0.2);
+}
+.fox-finance-modal .setting-item button {
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--fox-transition);
+}
+.fox-finance-modal .setting-item button:hover {
+  background: #7c73ff;
+}
+
+.fox-finance-hidden {
+  display: none !important;
+}
+
+/* ─── Settings Page ──────────────────────────────────── */
+
+.fox-setting-row {
+  border-top: none !important;
+  padding: 6px 0 !important;
+}
+.fox-setting-subs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 0 8px 20px;
+}
+.fox-sub-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 10px;
+  font-size: 11px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+}
+.fox-sub-input {
+  width: 64px;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--background-modifier-border) !important;
+  font-size: 11px !important;
+  padding: 1px 2px !important;
+  outline: none;
+}
+.fox-sub-input:focus {
+  border-bottom-color: var(--interactive-accent) !important;
+}
+.fox-sub-del {
+  cursor: pointer;
+  font-size: 10px;
+  margin-left: 2px;
+  color: var(--text-muted);
+}
+.fox-sub-del:hover {
+  color: var(--text-error);
+}
+.fox-sub-empty {
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* ─── Transaction Modal ──────────────────────────────── */
+
+.fox-tx-modal {
+  --modal-width: 680px;
+  max-height: 80vh;
+}
+.fox-tx-modal .modal-content {
+  padding: 0 20px 20px;
+  max-height: calc(80vh - 60px);
+  overflow-y: auto;
+}
+
+/* 标题行 + 月份导航 */
+.fox-tx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+.fox-tx-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fox-accent);
+}
+.fox-tx-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fox-tx-nav-btn {
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: 6px;
+  color: var(--fox-text-secondary);
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.fox-tx-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: white;
+}
+.fox-tx-nav-month {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  min-width: 72px;
+  text-align: center;
+}
+
+/* 汇总栏 */
+.fox-tx-summary {
+  display: flex;
+  gap: 20px;
+  padding: 14px 20px;
+  margin: 12px 20px 0;
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius-sm);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 13px;
+}
+.fox-tx-summary-income { color: var(--fox-green); }
+.fox-tx-summary-expense { color: var(--fox-red); }
+.fox-tx-summary-net { color: var(--fox-text-secondary); }
+.fox-tx-summary-net.positive { color: var(--fox-green); }
+.fox-tx-summary-net.negative { color: var(--fox-red); }
+
+/* 筛选栏 */
+.fox-tx-filters {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px;
+  margin: 10px 0 4px;
+}
+.fox-tx-filter-select {
+  background: rgba(255,255,255,0.1) !important;
+  border: 0.5px solid rgba(255,255,255,0.12) !important;
+  border-radius: 6px;
+  color: white !important;
+  font-size: 12px;
+  padding: 4px 24px 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+.fox-tx-filter-select option {
+  background: #1a1f2e;
+  color: white;
+}
+
+/* 流水表格 */
+.fox-tx-table {
+  padding: 0 20px;
+  margin-top: 6px;
+}
+
+/* 日期分组头 */
+.fox-tx-group-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fox-text-muted);
+  padding: 10px 4px 6px;
+  letter-spacing: 1px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.04);
+  margin-top: 4px;
+}
+
+/* 流水行 */
+.fox-tx-modal-row {
+  display: grid;
+  grid-template-columns: 42px 46px 1fr 64px 80px 1fr 50px;
+  gap: 0;
+  padding: 8px 4px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.02);
+  transition: background var(--fox-transition);
+  align-items: center;
+}
+.fox-tx-modal-row:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+/* 列 */
+.fox-tx-col-date { font-size: 12px; color: var(--fox-text-muted); }
+.fox-tx-col-type { font-size: 12px; }
+.fox-tx-col-cat { font-size: 12px; color: var(--fox-text-secondary); }
+.fox-tx-col-acct { font-size: 11px; color: var(--fox-text-muted); text-align: right; }
+.fox-tx-col-amt { font-size: 13px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.fox-tx-col-note { font-size: 11px; color: var(--fox-text-muted); padding-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.fox-tx-modal-row .fox-tx-col-amt.negative { color: var(--fox-red); }
+.fox-tx-modal-row .fox-tx-col-amt.positive { color: var(--fox-green); }
+
+/* 操作按钮 */
+.fox-tx-actions {
+  display: flex;
+  gap: 2px;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity var(--fox-transition);
+}
+.fox-tx-modal-row:hover .fox-tx-actions {
+  opacity: 1;
+}
+.fox-tx-action-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  background: transparent;
+  color: var(--fox-text-muted);
+  transition: all var(--fox-transition);
+}
+.fox-tx-action-btn:hover {
+  background: var(--fox-bg-glass-hover);
+}
+.fox-tx-action-edit:hover {
+  color: var(--fox-blue);
+}
+.fox-tx-action-del:hover {
+  color: var(--fox-red);
+}
+
+/* 标签芯片（流水行） */
+.fox-tx-col-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--fox-text-muted);
+  overflow: hidden;
+}
+.fox-tx-note-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100px;
+}
+.fox-tx-tag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--fox-accent-dim);
+  color: var(--fox-accent);
+  white-space: nowrap;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* 记账弹窗 - 标签芯片选择器 */
+.fox-tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 0;
+}
+.fox-tag-chip {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  color: var(--fox-text-secondary);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  user-select: none;
+}
+.fox-tag-chip:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--fox-text-primary);
+}
+.fox-tag-chip-active {
+  background: var(--fox-accent-dim);
+  color: var(--fox-accent);
+  border-color: var(--fox-accent);
+}
+
+/* 空状态 */
+.fox-tx-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--fox-text-muted);
+  font-size: 13px;
+}
+
+/* ─── Adjust Modal ──────────────────────────────────── */
+
+.fox-adjust-modal {
+  --modal-width: 380px;
+}
+.fox-adjust-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px;
+}
+.fox-adjust-label {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.fox-adjust-select {
+  flex: 1;
+  background: rgba(255,255,255,0.1) !important;
+  border: 0.5px solid rgba(255,255,255,0.12) !important;
+  border-radius: 6px;
+  color: white !important;
+  font-size: 13px;
+  padding: 5px 24px 5px 8px;
+  font-family: inherit;
+  appearance: auto;
+  -webkit-appearance: auto;
+}
+.fox-adjust-select option {
+  background: #1a1f2e;
+  color: white;
+}
+.fox-adjust-current {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fox-text-primary);
+}
+.fox-adjust-input {
+  flex: 1;
+  background: rgba(255,255,255,0.1) !important;
+  border: 0.5px solid rgba(255,255,255,0.12) !important;
+  border-radius: 6px;
+  color: white !important;
+  font-size: 14px;
+  padding: 6px 10px;
+  font-family: inherit;
+}
+.fox-adjust-input:focus {
+  border-color: var(--fox-accent) !important;
+  box-shadow: 0 0 0 1px rgba(167,139,250,0.2);
+}
+.fox-adjust-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 20px 20px;
+}
+.fox-adjust-btn {
+  padding: 6px 20px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 0.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: var(--fox-text-secondary);
+  transition: all var(--fox-transition);
+}
+.fox-adjust-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+.fox-adjust-btn-primary {
+  background: #6c63ff;
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+.fox-adjust-btn-primary:hover {
+  background: #7c73ff;
+  color: white;
+}
+
+/* ─── Annual Ring View ────────────────────────────── */
+
+.fox-review-view {
+  gap: 0;
+}
+
+/* 导航 */
+.fox-review-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.fox-review-nav-btn {
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: var(--fox-text-secondary);
+  font-size: 16px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.fox-review-nav-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+.fox-review-nav-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  min-width: 68px;
+  text-align: center;
+}
+
+/* 汇总 */
+.fox-review-summary {
+  display: flex;
+  gap: 20px;
+  padding: 14px 20px;
+  margin: 8px 0 6px;
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.fox-review-summary-income { color: var(--fox-green); }
+.fox-review-summary-expense { color: var(--fox-red); }
+.fox-review-summary-net { color: var(--fox-text-secondary); }
+.fox-review-summary-net.positive { color: var(--fox-green); }
+.fox-review-summary-net.negative { color: var(--fox-red); }
+.fox-review-summary-rate {
+  margin-left: auto;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+}
+.fox-review-summary-rate.positive { color: var(--fox-green); }
+.fox-review-summary-rate.negative { color: var(--fox-red); }
+
+/* 图表行 */
+.fox-review-chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.fox-review-chart-box {
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px;
+  height: 140px;
+  position: relative;
+}
+.fox-review-chart-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--fox-text-muted);
+  margin-bottom: 4px;
+}
+.fox-pie-canvas, .fox-bar-canvas {
+  width: 100%;
+  height: calc(100% - 18px);
+  position: relative;
+}
+
+/* 柱状图悬浮浮层 */
+.fox-bar-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  color: var(--fox-text-primary);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Sections */
+.fox-review-section {
+  background: var(--fox-bg-glass);
+  border: 0.5px solid var(--fox-border-glass);
+  border-radius: var(--fox-radius);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+.fox-review-section-title {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  margin-bottom: 10px;
+}
+.fox-review-empty {
+  font-size: 12px;
+  color: var(--fox-text-muted);
+  font-style: italic;
+}
+
+/* 预算追踪 */
+.fox-review-budget-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fox-text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 6px 0 2px;
+  padding: 0;
+}
+.fox-review-budget-group-label:first-child {
+  margin-top: 0;
+}
+.fox-review-budget-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.03);
+}
+.fox-review-budget-row:last-child {
+  border-bottom: none;
+}
+.fox-review-budget-label {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  min-width: 48px;
+}
+.fox-review-budget-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.fox-review-budget-fill {
+  height: 100%;
+  background: var(--fox-green);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.fox-review-budget-fill.over {
+  background: var(--fox-red);
+}
+.fox-review-budget-text {
+  font-size: 11px;
+  color: var(--fox-text-muted);
+  min-width: 80px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.fox-review-budget-text.over {
+  color: var(--fox-red);
+  font-weight: 600;
+}
+
+/* 账户状态 */
+.fox-review-acct-row {
+  display: grid;
+  grid-template-columns: 64px 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.03);
+  font-variant-numeric: tabular-nums;
+  align-items: center;
+}
+.fox-review-acct-row:last-child {
+  border-bottom: none;
+}
+.fox-review-acct-header {
+  font-size: 10px;
+  color: var(--fox-text-muted);
+  letter-spacing: 0.5px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+}
+.fox-review-acct-header .fox-review-acct-bal,
+.fox-review-acct-header .fox-review-acct-income,
+.fox-review-acct-header .fox-review-acct-expense,
+.fox-review-acct-header .fox-review-acct-change {
+  color: var(--fox-text-muted);
+}
+.fox-review-acct-name {
+  font-size: 12px;
+  color: var(--fox-text-primary);
+  font-weight: 500;
+}
+.fox-review-acct-bal {
+  font-size: 13px;
+  color: var(--fox-text-primary);
+  font-weight: 600;
+  text-align: right;
+}
+.fox-review-acct-income {
+  font-size: 11px;
+  color: var(--fox-green);
+  text-align: right;
+}
+.fox-review-acct-expense {
+  font-size: 11px;
+  color: var(--fox-red);
+  text-align: right;
+}
+.fox-review-acct-change {
+  font-size: 11px;
+  color: var(--fox-text-muted);
+  text-align: right;
+}
+.fox-review-acct-change.positive {
+  color: var(--fox-green);
+}
+.fox-review-acct-change.negative {
+  color: var(--fox-red);
+}
+
+/* 月度点评 */
+.fox-review-point {
+  font-size: 12px;
+  color: var(--fox-text-secondary);
+  padding: 4px 0 4px 12px;
+  position: relative;
+  line-height: 1.6;
+}
+.fox-review-point::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--fox-accent);
+}
+
+/* 操作栏 */
+.fox-review-action-row {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  flex-shrink: 0;
+}
+.fox-review-gen-btn {
+  padding: 8px 20px;
+  font-size: 13px;
+  font-family: inherit;
+  background: rgba(108,99,255,0.15);
+  border: 0.5px solid rgba(108,99,255,0.3);
+  border-radius: var(--fox-radius-sm);
+  color: var(--fox-accent);
+  cursor: pointer;
+  transition: all var(--fox-transition);
+  font-weight: 500;
+}
+.fox-review-gen-btn:hover {
+  background: rgba(108,99,255,0.25);
+  color: white;
+}
