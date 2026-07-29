@@ -22,7 +22,7 @@ __export(main_exports, {
   default: () => FoxFinancePlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian7 = require("obsidian");
+var import_obsidian8 = require("obsidian");
 
 // finance.ts
 var import_obsidian = require("obsidian");
@@ -577,7 +577,7 @@ var FoxFinanceModal = class extends import_obsidian2.Modal {
 };
 
 // finance-view.ts
-var import_obsidian5 = require("obsidian");
+var import_obsidian6 = require("obsidian");
 
 // finance-tx-modal.ts
 var import_obsidian3 = require("obsidian");
@@ -913,9 +913,66 @@ var FoxFinanceAdjustModal = class extends import_obsidian4.Modal {
   }
 };
 
+// finance-cash-modal.ts
+var import_obsidian5 = require("obsidian");
+var FoxFinanceCashModal = class extends import_obsidian5.Modal {
+  constructor(app, plugin, balances) {
+    super(app);
+    this.plugin = plugin;
+    this.balances = balances;
+  }
+  onOpen() {
+    this.modalEl.addClass("fox-finance-modal", "fox-cash-modal");
+    this.render();
+  }
+  render() {
+    const { contentEl } = this;
+    contentEl.empty();
+    const titleRow = contentEl.createDiv({ cls: "fox-cash-title-row" });
+    titleRow.createEl("span", { cls: "fox-cash-title-icon", text: "\u{1F4D6}" });
+    titleRow.createEl("span", { cls: "fox-cash-title", text: "\u73B0\u91D1\u6D41\u6863\u6848" });
+    titleRow.createEl("span", { cls: "fox-cash-subtitle", text: "\u6240\u6709\u73B0\u91D1\u8D26\u6237\u4E00\u89C8" });
+    const accounts = this.plugin.settings?.accounts ?? [];
+    const cashAccounts = accounts.filter((a) => a.type === "cash");
+    const totalBalance = cashAccounts.reduce((s, a) => s + (this.balances[a.name] ?? 0), 0);
+    const positiveAccounts = cashAccounts.filter((a) => (this.balances[a.name] ?? 0) > 0).length;
+    const statRow = contentEl.createDiv({ cls: "fox-cash-stat-row" });
+    const totalStat = statRow.createDiv({ cls: "fox-cash-stat" });
+    totalStat.createEl("span", { cls: "fox-cash-stat-label", text: "\u603B\u4F59\u989D" });
+    totalStat.createEl("span", { cls: "fox-cash-stat-value", text: `\xA5${totalBalance.toFixed(2)}` });
+    const countStat = statRow.createDiv({ cls: "fox-cash-stat" });
+    countStat.createEl("span", { cls: "fox-cash-stat-label", text: "\u8D26\u6237\u6570" });
+    countStat.createEl("span", { cls: "fox-cash-stat-value fox-cash-stat-count", text: `${cashAccounts.length}` });
+    const activeStat = statRow.createDiv({ cls: "fox-cash-stat" });
+    activeStat.createEl("span", { cls: "fox-cash-stat-label", text: "\u6709\u4F59\u989D" });
+    activeStat.createEl("span", { cls: "fox-cash-stat-value fox-cash-stat-active", text: `${positiveAccounts}` });
+    if (cashAccounts.length === 0) {
+      const empty = contentEl.createDiv({ cls: "fox-cash-empty" });
+      empty.createEl("span", { cls: "fox-cash-empty-icon", text: "\u{1F331}" });
+      empty.createEl("span", { text: "\u8FD8\u6CA1\u6709\u73B0\u91D1\u8D26\u6237\uFF0C\u5148\u53BB\u8BBE\u7F6E\u9875\u6DFB\u52A0\u5427" });
+    } else {
+      const list = contentEl.createDiv({ cls: "fox-cash-list" });
+      for (const acc of cashAccounts) {
+        const bal = this.balances[acc.name] ?? 0;
+        const row = list.createDiv({ cls: "fox-cash-item" });
+        row.createEl("span", { cls: "fox-cash-item-dot", text: "\u25CF" });
+        row.createEl("span", { cls: "fox-cash-item-name", text: acc.name });
+        const amtEl = row.createEl("span", { cls: `fox-cash-item-amt${bal >= 0 ? "" : " negative"}` });
+        amtEl.textContent = `\xA5${bal.toFixed(2)}`;
+      }
+    }
+    const footer = contentEl.createDiv({ cls: "fox-cash-footer" });
+    const closeBtn = footer.createEl("button", { cls: "fox-cash-close-btn", text: "\u5173\u95ED" });
+    closeBtn.onclick = () => this.close();
+  }
+  onClose() {
+    this.contentEl.empty();
+  }
+};
+
 // finance-view.ts
 var VIEW_TYPE_FOX_FINANCE = "fox-finance-dashboard";
-var FoxFinanceView = class extends import_obsidian5.ItemView {
+var FoxFinanceView = class extends import_obsidian6.ItemView {
   constructor(leaf, plugin) {
     super(leaf);
     this.plugin = plugin;
@@ -1029,6 +1086,11 @@ var FoxFinanceView = class extends import_obsidian5.ItemView {
     this.buildCard(cardsRow, "\u73B0\u91D1\u6D41", "cash", "\u5E7C\u82D7.png", () => {
       return Object.entries(this.balances).filter(([_, v]) => v > 0).slice(0, 3);
     });
+    const cashCard = cardsRow.querySelector(".fox-card-cash");
+    if (cashCard) {
+      cashCard.style.cursor = "pointer";
+      cashCard.onclick = () => new FoxFinanceCashModal(this.app, this.plugin, this.balances).open();
+    }
     this.buildCard(cardsRow, "\u6295\u8D44\u8D44\u4EA7", "invest", "\u8D22\u5BCC\u6811.png", () => []);
     this.buildCenterCard(cardsRow);
     this.buildCard(cardsRow, "\u672C\u6708\u9884\u7B97", "budget", "\u8D22\u5BCC\u5706\u76D8.png", () => []);
@@ -1179,10 +1241,10 @@ var FoxFinanceView = class extends import_obsidian5.ItemView {
 };
 
 // finance-review-view.ts
-var import_obsidian6 = require("obsidian");
+var import_obsidian7 = require("obsidian");
 var VIEW_TYPE_FOX_REVIEW = "fox-finance-review";
 var PIE_COLORS = ["#a78bfa", "#34d399", "#f87171", "#f59e0b", "#60a5fa", "#f472b6", "#2dd4bf", "#fb923c", "#e879f9", "#22d3ee"];
-var FoxFinanceReviewView = class extends import_obsidian6.ItemView {
+var FoxFinanceReviewView = class extends import_obsidian7.ItemView {
   constructor(leaf, plugin) {
     super(leaf);
     this.plugin = plugin;
@@ -1637,7 +1699,7 @@ ${budgetRows.join("\n")}
 ${pointsText}
 `;
     await this.app.vault.adapter.write(path, content);
-    new import_obsidian6.Notice(`\u2705 \u5E74\u8F6E\u7B14\u8BB0\u5DF2\u4FDD\u5B58\uFF1A${path}`);
+    new import_obsidian7.Notice(`\u2705 \u5E74\u8F6E\u7B14\u8BB0\u5DF2\u4FDD\u5B58\uFF1A${path}`);
   }
   // ========================
   // HELPERS
@@ -1699,7 +1761,7 @@ var BG_POOLS = {
   glasshouse: ["\u68EE\u6797\u73BB\u7483\u5C4B.png", "\u68EE\u6797\u73BB\u7483\u5C4B2.png"]
 };
 var ASSET_ROOT = ".obsidian/plugins/fox-finance/Asset/";
-var FoxFinancePlugin = class extends import_obsidian7.Plugin {
+var FoxFinancePlugin = class extends import_obsidian8.Plugin {
   constructor() {
     super(...arguments);
     this.settings = DEFAULT_SETTINGS;
@@ -1830,7 +1892,7 @@ var FoxFinancePlugin = class extends import_obsidian7.Plugin {
           pool.push(url);
       }
       if (pool.length === 0) {
-        new import_obsidian7.Notice("\u672A\u8BBE\u7F6E\u81EA\u5B9A\u4E49\u80CC\u666F\u56FE\uFF0C\u8BF7\u5728\u4E3B\u9898\u8BBE\u7F6E\u4E2D\u9009\u62E9\u5185\u7F6E\u4E3B\u9898\u6216\u6DFB\u52A0\u56FE\u7247\u8DEF\u5F84");
+        new import_obsidian8.Notice("\u672A\u8BBE\u7F6E\u81EA\u5B9A\u4E49\u80CC\u666F\u56FE\uFF0C\u8BF7\u5728\u4E3B\u9898\u8BBE\u7F6E\u4E2D\u9009\u62E9\u5185\u7F6E\u4E3B\u9898\u6216\u6DFB\u52A0\u56FE\u7247\u8DEF\u5F84");
         return "";
       }
       return pool[Math.floor(Math.random() * pool.length)];
@@ -1859,7 +1921,7 @@ var FoxFinancePlugin = class extends import_obsidian7.Plugin {
     return this.readAsset(`icons/${name}`);
   }
 };
-var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
+var FoxFinanceSettingTab = class extends import_obsidian8.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -1872,7 +1934,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     containerEl.empty();
     containerEl.createEl("h2", { text: "\u2726 Fox Finance \u8BBE\u7F6E" });
     containerEl.createEl("h3", { text: "\u80CC\u666F\u4E3B\u9898" });
-    new import_obsidian7.Setting(containerEl).setName("\u80CC\u666F\u4E3B\u9898").setDesc('\u9009\u62E9\u5185\u7F6E\u4E3B\u9898\uFF0C\u6216\u9009"\u81EA\u5B9A\u4E49"\u4F7F\u7528\u4E0B\u65B9\u6DFB\u52A0\u7684\u56FE\u7247').addDropdown((d) => {
+    new import_obsidian8.Setting(containerEl).setName("\u80CC\u666F\u4E3B\u9898").setDesc('\u9009\u62E9\u5185\u7F6E\u4E3B\u9898\uFF0C\u6216\u9009"\u81EA\u5B9A\u4E49"\u4F7F\u7528\u4E0B\u65B9\u6DFB\u52A0\u7684\u56FE\u7247').addDropdown((d) => {
       d.addOption("galaxy", "\u{1F30C} \u94F6\u6CB3\u68EE\u6797");
       d.addOption("glasshouse", "\u{1F3E1} \u68EE\u6797\u73BB\u7483\u5C4B");
       d.addOption("custom", "\u{1F5BC}\uFE0F \u81EA\u5B9A\u4E49");
@@ -1892,7 +1954,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     bgDesc.style.margin = "0 0 12px";
     const bgList = containerEl.createDiv();
     this.renderBgPathList(bgList);
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u56FE\u7247\u8DEF\u5F84").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u56FE\u7247\u8DEF\u5F84").setCta().onClick(async () => {
       this.p.settings.customBgPaths.push("");
       await this.p.saveData(this.p.settings);
       this.display();
@@ -1900,7 +1962,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     containerEl.createEl("h3", { text: "\u8D26\u6237\u7BA1\u7406" });
     const accountList = containerEl.createDiv();
     this.renderAccountList(accountList);
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u8D26\u6237").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u8D26\u6237").setCta().onClick(async () => {
       this.p.settings.accounts.push({ name: "", type: "cash" });
       await this.p.saveData(this.p.settings);
       this.display();
@@ -1908,7 +1970,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     containerEl.createEl("h3", { text: "\u5206\u7C7B\u7BA1\u7406" });
     const catList = containerEl.createDiv();
     this.renderCategoryList(catList);
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u5206\u7C7B").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u5206\u7C7B").setCta().onClick(async () => {
       this.p.settings.categories.push({ name: "", type: "expense", subcategories: ["\u5176\u4ED6"] });
       await this.p.saveData(this.p.settings);
       this.display();
@@ -1916,7 +1978,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     containerEl.createEl("h3", { text: "\u9884\u7B97" });
     const budgetList = containerEl.createDiv();
     this.renderBudgetList(budgetList);
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u9884\u7B97").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u9884\u7B97").setCta().onClick(async () => {
       const firstCat = this.p.settings.categories.find((c) => c.type === "expense");
       this.p.settings.budgets.push({ category: firstCat?.name || "", amount: 0, period: "monthly" });
       await this.p.saveData(this.p.settings);
@@ -1926,15 +1988,15 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
     containerEl.createEl("p", { cls: "setting-item-description", text: '\u7ED9\u4EA4\u6613\u6253\u6807\u7B7E\uFF0C\u65B9\u4FBF\u6309\u573A\u666F\u7B5B\u9009\uFF08\u5982"\u5DE5\u4F5C"\u76F8\u5173\u7684\u6253\u8F66\u8D39\uFF09' });
     const tagList = containerEl.createDiv();
     this.renderTagList(tagList);
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u6807\u7B7E").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\uFF0B \u6DFB\u52A0\u6807\u7B7E").setCta().onClick(async () => {
       this.p.settings.tags.push("");
       await this.p.saveData(this.p.settings);
       this.display();
     }));
     containerEl.createEl("hr");
-    new import_obsidian7.Setting(containerEl).addButton((b) => b.setButtonText("\u{1F4BE} \u4FDD\u5B58\u8BBE\u7F6E").setCta().onClick(async () => {
+    new import_obsidian8.Setting(containerEl).addButton((b) => b.setButtonText("\u{1F4BE} \u4FDD\u5B58\u8BBE\u7F6E").setCta().onClick(async () => {
       await this.p.saveData(this.p.settings);
-      new import_obsidian7.Notice("\u2705 \u8BBE\u7F6E\u5DF2\u4FDD\u5B58");
+      new import_obsidian8.Notice("\u2705 \u8BBE\u7F6E\u5DF2\u4FDD\u5B58");
     }));
   }
   // ─── Background Path List ──────────────────────────
@@ -1945,7 +2007,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
       return;
     }
     paths.forEach((p, i) => {
-      const s = new import_obsidian7.Setting(el).addText((t) => t.setPlaceholder("\u9644\u4EF6\u7684\u56FE\u7247/\u98CE\u666F.png").setValue(p).onChange(async (v) => {
+      const s = new import_obsidian8.Setting(el).addText((t) => t.setPlaceholder("\u9644\u4EF6\u7684\u56FE\u7247/\u98CE\u666F.png").setValue(p).onChange(async (v) => {
         paths[i] = v;
         await this.p.saveData(this.p.settings);
       })).addButton((b) => b.setIcon("trash").setWarning().onClick(async () => {
@@ -1959,7 +2021,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
   // ─── Account List ────────────────────────────────
   renderAccountList(el) {
     this.p.settings.accounts.forEach((acc, i) => {
-      const s = new import_obsidian7.Setting(el).addText((t) => t.setPlaceholder("\u8D26\u6237\u540D\u79F0").setValue(acc.name).onChange(async (v) => {
+      const s = new import_obsidian8.Setting(el).addText((t) => t.setPlaceholder("\u8D26\u6237\u540D\u79F0").setValue(acc.name).onChange(async (v) => {
         this.p.settings.accounts[i].name = v;
         await this.p.saveData(this.p.settings);
       })).addDropdown((d) => d.addOption("cash", "\u73B0\u91D1\u8D26\u6237").addOption("investment", "\u6295\u8D44\u8D26\u6237").setValue(acc.type).onChange(async (v) => {
@@ -1976,7 +2038,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
   // ─── Category List ──────────────────────────────
   renderCategoryList(el) {
     this.p.settings.categories.forEach((cat, i) => {
-      const s = new import_obsidian7.Setting(el).addText((t) => t.setPlaceholder("\u5206\u7C7B\u540D\u79F0").setValue(cat.name).onChange(async (v) => {
+      const s = new import_obsidian8.Setting(el).addText((t) => t.setPlaceholder("\u5206\u7C7B\u540D\u79F0").setValue(cat.name).onChange(async (v) => {
         this.p.settings.categories[i].name = v;
         await this.p.saveData(this.p.settings);
       })).addDropdown((d) => d.addOption("expense", "\u652F\u51FA").addOption("income", "\u6536\u5165").setValue(cat.type).onChange(async (v) => {
@@ -2013,7 +2075,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
   // ─── Budget List ────────────────────────────────
   renderBudgetList(el) {
     this.p.settings.budgets.forEach((budget, i) => {
-      const s = new import_obsidian7.Setting(el).addDropdown((d) => {
+      const s = new import_obsidian8.Setting(el).addDropdown((d) => {
         const expenseCats = this.p.settings.categories.filter((c) => c.type === "expense");
         (expenseCats.length ? expenseCats : [{ name: "\u9910\u996E" }, { name: "\u4EA4\u901A" }]).forEach((c) => d.addOption(c.name, c.name));
         d.setValue(budget.category);
@@ -2038,7 +2100,7 @@ var FoxFinanceSettingTab = class extends import_obsidian7.PluginSettingTab {
   // ─── Tag List ─────────────────────────────────────
   renderTagList(el) {
     this.p.settings.tags.forEach((tag, i) => {
-      const s = new import_obsidian7.Setting(el).addText((t) => t.setPlaceholder("\u6807\u7B7E\u540D\u79F0").setValue(tag).onChange(async (v) => {
+      const s = new import_obsidian8.Setting(el).addText((t) => t.setPlaceholder("\u6807\u7B7E\u540D\u79F0").setValue(tag).onChange(async (v) => {
         this.p.settings.tags[i] = v;
         await this.p.saveData(this.p.settings);
       })).addButton((b) => b.setIcon("trash").setWarning().onClick(async () => {

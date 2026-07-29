@@ -2,6 +2,7 @@ import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { FinanceDataLayer, Transaction, TRANSACTION_TYPE_LABELS } from './finance';
 import { FoxFinanceTxModal } from './finance-tx-modal';
 import { FoxFinanceAdjustModal } from './finance-adjust-modal';
+import { FoxFinanceCashModal } from './finance-cash-modal';
 import type FoxFinancePlugin from './main';
 
 export const VIEW_TYPE_FOX_FINANCE = 'fox-finance-dashboard';
@@ -137,6 +138,12 @@ export class FoxFinanceView extends ItemView {
     this.buildCard(cardsRow, '现金流', 'cash', '幼苗.png', () => {
       return Object.entries(this.balances).filter(([_, v]) => v > 0).slice(0, 3);
     });
+    // 现金流卡片点击弹窗查看全部账户
+    const cashCard = cardsRow.querySelector('.fox-card-cash') as HTMLElement;
+    if (cashCard) {
+      cashCard.style.cursor = 'pointer';
+      cashCard.onclick = () => new FoxFinanceCashModal(this.app as any, this.plugin, this.balances).open();
+    }
     this.buildCard(cardsRow, '投资资产', 'invest', '财富树.png', () => []);
     this.buildCenterCard(cardsRow);
     this.buildCard(cardsRow, '本月预算', 'budget', '财富圆盘.png', () => []);

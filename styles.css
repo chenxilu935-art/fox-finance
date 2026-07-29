@@ -498,13 +498,26 @@
 
 /* ─── Modal ──────────────────────────────────────────── */
 
+/* 遮罩层 — 不让 Obsidian 默认的泛白遮罩破坏森林氛围 */
+.modal-bg:has(+ .fox-finance-modal) {
+  background: rgba(5,10,20,0.45) !important;
+}
+
 .fox-finance-modal {
   --modal-width: 420px;
-  background: #1a1f2e !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 0.5px solid rgba(255,255,255,0.08);
-  border-radius: var(--fox-radius);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(121,37,176,0.25),
+      rgba(9,17,66,0.75)
+    ) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid rgba(180,150,255,0.18);
+  border-radius: 16px;
+  box-shadow:
+    0 0 60px rgba(121,37,176,0.08),
+    0 0 0 0.5px rgba(180,150,255,0.06) inset;
 }
 .fox-finance-modal .modal-content {
   padding: 0 20px 20px;
@@ -516,6 +529,7 @@
   color: var(--fox-accent);
   margin: 0 0 16px;
   padding: 20px 20px 0;
+  letter-spacing: 0.5px;
 }
 .fox-finance-modal .setting-item {
   border-top: none;
@@ -531,31 +545,202 @@
 }
 .fox-finance-modal input,
 .fox-finance-modal select {
-  background: rgba(255,255,255,0.12) !important;
-  border: 0.5px solid rgba(255,255,255,0.15) !important;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.06) !important;
+  border: 0.5px solid rgba(255,255,255,0.1) !important;
+  border-radius: 8px;
   color: #ffffff !important;
   font-size: 13px;
-  padding: 5px 10px;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
 }
 .fox-finance-modal input:focus,
 .fox-finance-modal select:focus {
-  border-color: var(--fox-accent) !important;
-  box-shadow: 0 0 0 1px rgba(167,139,250,0.2);
+  border-color: rgba(167,139,250,0.4) !important;
+  box-shadow: 0 0 12px rgba(167,139,250,0.1);
 }
-.fox-finance-modal .setting-item button {
-  background: #6c63ff;
+.fox-finance-modal select {
+  cursor: pointer;
+  padding-right: 24px;
+}
+.fox-finance-modal select option {
+  background: rgba(20,30,50,0.95);
   color: white;
-  border: none;
-  border-radius: 6px;
+}
+
+/* 设置页通用按钮走温和玻璃风 */
+.fox-finance-modal .setting-item button {
+  background: rgba(167,139,250,0.1);
+  color: var(--fox-accent);
+  border: 0.5px solid rgba(167,139,250,0.15);
+  border-radius: 8px;
   padding: 6px 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: background var(--fox-transition);
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 .fox-finance-modal .setting-item button:hover {
-  background: #7c73ff;
+  background: rgba(167,139,250,0.2);
+  box-shadow: 0 0 16px rgba(167,139,250,0.08);
+  color: white;
+}
+.fox-finance-modal .setting-item button.mod-cta {
+  background: rgba(167,139,250,0.15);
+  border-color: rgba(167,139,250,0.25);
+  color: var(--fox-accent);
+  font-weight: 600;
+}
+
+/* ─── Cash Modal（现金流档案） ──────────────────────── */
+
+.fox-cash-modal {
+  --modal-width: 400px;
+}
+.fox-cash-modal .modal-content {
+  padding: 0;
+  background: transparent;
+}
+
+/* 标题 */
+.fox-cash-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 24px 24px 0;
+}
+.fox-cash-title-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+.fox-cash-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fox-accent);
+  letter-spacing: 1px;
+}
+.fox-cash-subtitle {
+  font-size: 11px;
+  color: var(--fox-text-muted);
+  margin-left: auto;
+  letter-spacing: 0.5px;
+}
+
+/* 汇总统计三块 */
+.fox-cash-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  padding: 18px 24px 0;
+}
+.fox-cash-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+}
+.fox-cash-stat-label {
+  font-size: 10px;
+  color: var(--fox-text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.fox-cash-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fox-green);
+  font-variant-numeric: tabular-nums;
+}
+.fox-cash-stat-count {
+  color: white;
+}
+.fox-cash-stat-active {
+  color: var(--fox-accent);
+}
+
+/* 账户列表 */
+.fox-cash-list {
+  padding: 12px 24px 0;
+}
+.fox-cash-item {
+  display: grid;
+  grid-template-columns: 16px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.03);
+  transition: background 0.2s ease;
+  border-radius: 8px;
+}
+.fox-cash-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+.fox-cash-item:last-child {
+  border-bottom: none;
+}
+.fox-cash-item-dot {
+  font-size: 8px;
+  color: var(--fox-accent);
+  opacity: 0.6;
+  line-height: 1;
+}
+.fox-cash-item-name {
+  font-size: 14px;
+  color: var(--fox-text-primary);
+  font-weight: 500;
+}
+.fox-cash-item-amt {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fox-green);
+  font-variant-numeric: tabular-nums;
+}
+.fox-cash-item-amt.negative {
+  color: var(--fox-red);
+}
+
+/* 空状态 */
+.fox-cash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+  color: var(--fox-text-muted);
+  font-size: 13px;
+}
+.fox-cash-empty-icon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+/* 底部 */
+.fox-cash-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px 24px 24px;
+}
+.fox-cash-close-btn {
+  padding: 8px 32px;
+  font-size: 13px;
+  font-family: inherit;
+  background: rgba(167,139,250,0.08);
+  border: 0.5px solid rgba(167,139,250,0.15);
+  border-radius: 8px;
+  color: var(--fox-accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.fox-cash-close-btn:hover {
+  background: rgba(167,139,250,0.18);
+  box-shadow: 0 0 20px rgba(167,139,250,0.08);
 }
 
 .fox-finance-hidden {
@@ -622,7 +807,7 @@
 }
 
 /* 标题行 + 月份导航 */
-.fox-tx-header {
+.fox-tx-modal .fox-tx-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -632,6 +817,7 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--fox-accent);
+  letter-spacing: 0.5px;
 }
 .fox-tx-nav {
   display: flex;
@@ -639,15 +825,15 @@
   gap: 10px;
 }
 .fox-tx-nav-btn {
-  background: var(--fox-bg-glass);
-  border: 0.5px solid var(--fox-border-glass);
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
   color: var(--fox-text-secondary);
   font-size: 16px;
   width: 28px;
   height: 28px;
   cursor: pointer;
-  transition: all var(--fox-transition);
+  transition: all 0.2s ease;
   font-family: inherit;
   display: flex;
   align-items: center;
@@ -672,18 +858,18 @@
   gap: 20px;
   padding: 14px 20px;
   margin: 12px 20px 0;
-  background: var(--fox-bg-glass);
-  border: 0.5px solid var(--fox-border-glass);
-  border-radius: var(--fox-radius-sm);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   font-size: 13px;
 }
-.fox-tx-summary-income { color: var(--fox-green); }
-.fox-tx-summary-expense { color: var(--fox-red); }
-.fox-tx-summary-net { color: var(--fox-text-secondary); }
-.fox-tx-summary-net.positive { color: var(--fox-green); }
-.fox-tx-summary-net.negative { color: var(--fox-red); }
+.fox-tx-summary-income { color: #34d399; }
+.fox-tx-summary-expense { color: #f87171; }
+.fox-tx-summary-net { color: #fbbf24; }
+.fox-tx-summary-net.positive { color: #fbbf24; }
+.fox-tx-summary-net.negative { color: #f87171; }
 
 /* 筛选栏 */
 .fox-tx-filters {
@@ -693,19 +879,21 @@
   margin: 10px 0 4px;
 }
 .fox-tx-filter-select {
-  background: rgba(255,255,255,0.1) !important;
-  border: 0.5px solid rgba(255,255,255,0.12) !important;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04) !important;
+  border: 0.5px solid rgba(255,255,255,0.08) !important;
+  border-radius: 8px;
   color: white !important;
   font-size: 12px;
-  padding: 4px 24px 4px 8px;
+  padding: 5px 24px 5px 10px;
   cursor: pointer;
   font-family: inherit;
-  appearance: auto;
-  -webkit-appearance: auto;
+  transition: all 0.2s ease;
+}
+.fox-tx-filter-select:hover {
+  border-color: rgba(167,139,250,0.25) !important;
 }
 .fox-tx-filter-select option {
-  background: #1a1f2e;
+  background: rgba(20,30,50,0.98);
   color: white;
 }
 
@@ -731,13 +919,14 @@
   display: grid;
   grid-template-columns: 42px 46px 1fr 64px 80px 1fr 50px;
   gap: 0;
-  padding: 8px 4px;
-  border-bottom: 0.5px solid rgba(255,255,255,0.02);
-  transition: background var(--fox-transition);
+  padding: 10px 10px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.03);
+  transition: background 0.2s ease;
   align-items: center;
+  border-radius: 8px;
 }
 .fox-tx-modal-row:hover {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.04);
 }
 
 /* 列 */
@@ -767,17 +956,17 @@
   height: 24px;
   padding: 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
   line-height: 24px;
   text-align: center;
   background: transparent;
   color: var(--fox-text-muted);
-  transition: all var(--fox-transition);
+  transition: all 0.2s ease;
 }
 .fox-tx-action-btn:hover {
-  background: var(--fox-bg-glass-hover);
+  background: rgba(255,255,255,0.06);
 }
 .fox-tx-action-edit:hover {
   color: var(--fox-blue);
@@ -870,38 +1059,43 @@
 }
 .fox-adjust-select {
   flex: 1;
-  background: rgba(255,255,255,0.1) !important;
-  border: 0.5px solid rgba(255,255,255,0.12) !important;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04) !important;
+  border: 0.5px solid rgba(255,255,255,0.08) !important;
+  border-radius: 8px;
   color: white !important;
   font-size: 13px;
-  padding: 5px 24px 5px 8px;
+  padding: 6px 24px 6px 10px;
   font-family: inherit;
-  appearance: auto;
-  -webkit-appearance: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.fox-adjust-select:hover {
+  border-color: rgba(167,139,250,0.25) !important;
 }
 .fox-adjust-select option {
-  background: #1a1f2e;
+  background: rgba(20,30,50,0.98);
   color: white;
 }
 .fox-adjust-current {
   font-size: 16px;
   font-weight: 600;
   color: var(--fox-text-primary);
+  font-variant-numeric: tabular-nums;
 }
 .fox-adjust-input {
   flex: 1;
-  background: rgba(255,255,255,0.1) !important;
-  border: 0.5px solid rgba(255,255,255,0.12) !important;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04) !important;
+  border: 0.5px solid rgba(255,255,255,0.08) !important;
+  border-radius: 8px;
   color: white !important;
   font-size: 14px;
   padding: 6px 10px;
   font-family: inherit;
+  transition: all 0.2s ease;
 }
 .fox-adjust-input:focus {
-  border-color: var(--fox-accent) !important;
-  box-shadow: 0 0 0 1px rgba(167,139,250,0.2);
+  border-color: rgba(167,139,250,0.4) !important;
+  box-shadow: 0 0 12px rgba(167,139,250,0.1);
 }
 .fox-adjust-actions {
   display: flex;
@@ -912,26 +1106,28 @@
 .fox-adjust-btn {
   padding: 6px 20px;
   font-size: 13px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-family: inherit;
-  border: 0.5px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.06);
-  color: var(--fox-text-secondary);
-  transition: all var(--fox-transition);
+  border: 0.5px solid rgba(167,139,250,0.15);
+  background: rgba(167,139,250,0.08);
+  color: var(--fox-accent);
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 .fox-adjust-btn:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(167,139,250,0.18);
   color: white;
+  box-shadow: 0 0 16px rgba(167,139,250,0.08);
 }
 .fox-adjust-btn-primary {
-  background: #6c63ff;
-  color: white;
-  border-color: transparent;
+  background: rgba(167,139,250,0.15);
+  border-color: rgba(167,139,250,0.25);
+  color: var(--fox-accent);
   font-weight: 600;
 }
 .fox-adjust-btn-primary:hover {
-  background: #7c73ff;
+  background: rgba(167,139,250,0.25);
   color: white;
 }
 
