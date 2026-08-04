@@ -3,6 +3,12 @@
 > 一个基于 Obsidian 的个人财富管理系统。  
 > 不是传统记账软件——是陪伴你长期成长的财富森林。
 
+## 预览
+<img width="2159" height="1314" alt="image" src="https://github.com/user-attachments/assets/181f5bf7-1ad7-45f5-b94e-9274a03ba874" />
+<img width="2094" height="1310" alt="image" src="https://github.com/user-attachments/assets/a99a5ca1-856a-441a-a021-5bfbc65a67cb" />
+<img width="1049" height="656" alt="image" src="https://github.com/user-attachments/assets/480a33af-c377-4adb-97f4-a756d96ef330" />
+<img width="1049" height="653" alt="image" src="https://github.com/user-attachments/assets/cb62220d-b27a-4cca-9960-addc878cfde4" />
+
 ---
 
 ## 快速安装
