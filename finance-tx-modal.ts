@@ -135,14 +135,6 @@ export class FoxFinanceTxModal extends Modal {
             });
           }
 
-          // ─── 标签展示 ───
-          if (tx.tags) {
-            const tagCell = row.createSpan({ cls: 'fox-tx-col-tags' });
-            tx.tags.split(',').map(s => s.trim()).filter(Boolean).forEach(t => {
-              tagCell.createSpan({ cls: 'fox-tx-tag', text: t });
-            });
-          }
-
           // ─── 操作按钮 ───
           const actions = row.createDiv({ cls: 'fox-tx-actions' });
 

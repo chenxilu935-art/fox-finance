@@ -393,15 +393,27 @@ export class FoxFinanceReviewView extends ItemView {
       points.push('本月没有收入记录，支出全靠存量');
     }
 
-    // 预算超支
-    for (const b of budgets) {
+    // 预算超支（月度按当月、年度按全年）
+    const monthlyBudgets = budgets.filter((b: any) => b.period === 'monthly');
+    const yearlyBudgets = budgets.filter((b: any) => b.period === 'yearly');
+    for (const b of monthlyBudgets) {
       if (b.amount <= 0) continue;
       const spent = this.txs.filter(t => t.type === 'expense' && t.category === b.category).reduce((s, t) => s + t.amount, 0);
       if (spent > b.amount) {
         const over = Math.round((spent - b.amount) / b.amount * 100);
         points.push(`「${b.category}」超预算 ${over}%，实际 ¥${spent.toFixed(0)} / 预算 ¥${b.amount}`);
-      } else if (b.amount > 0 && spent <= b.amount * 0.8) {
+      } else if (spent <= b.amount * 0.8) {
         points.push(`「${b.category}」控制在预算的 ${Math.round(spent / b.amount * 100)}%，表现不错 ✅`);
+      }
+    }
+    for (const b of yearlyBudgets) {
+      if (b.amount <= 0) continue;
+      const spent = (this._yearlyTxs || this.txs).filter(t => t.type === 'expense' && t.category === b.category).reduce((s, t) => s + t.amount, 0);
+      if (spent > b.amount) {
+        const over = Math.round((spent - b.amount) / b.amount * 100);
+        points.push(`「${b.category}」年度超预算 ${over}%，实际 ¥${spent.toFixed(0)} / 预算 ¥${b.amount}`);
+      } else if (spent <= b.amount * 0.8) {
+        points.push(`「${b.category}」年度控制在预算的 ${Math.round(spent / b.amount * 100)}%，表现不错 ✅`);
       }
     }
 
@@ -552,9 +564,7 @@ ${pointsText}
   }
 
   private getLevelText(): string {
-    const bal = Object.values(this.txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0) -
-      this.txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0));
-    // Simple level based on net asset
-    return '🌰 Lv.1';
+    const net = Object.values(this.balances).reduce((s, v) => s + v, 0);
+    return net > 50000 ? '🌳 Lv.3' : net > 10000 ? '🌱 Lv.2' : '🌰 Lv.1';
   }
 }

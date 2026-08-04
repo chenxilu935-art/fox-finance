@@ -172,35 +172,6 @@ ${body}`);
     }
     return balances;
   }
-  // ─── Migration ───────────────────────────────────
-  /**
-   * 从 settings.financeRecords 迁移旧数据到账本
-   * @returns 迁移的记录数
-   */
-  async migrateOldData(plugin) {
-    const records = plugin.settings.financeRecords;
-    if (!Array.isArray(records) || records.length === 0)
-      return 0;
-    let count = 0;
-    for (const r of records) {
-      const tx = {
-        date: r.date || r.time || "",
-        type: r.type || "expense",
-        amount: Number(r.amount) || 0,
-        account: r.account || "\u73B0\u91D1",
-        category: r.category || "\u5176\u4ED6",
-        subcategory: r.subcategory || "",
-        note: r.note || r.description || ""
-      };
-      if (!tx.date)
-        continue;
-      await this.appendToLedger(tx);
-      count++;
-    }
-    plugin.settings.financeRecords = [];
-    await plugin.saveSettings();
-    return count;
-  }
   // ─── Private: file helpers ───────────────────────
   async readLedgerFile(path) {
     if (!await this.adapter.exists(path))
@@ -702,12 +673,6 @@ var FoxFinanceTxModal = class extends import_obsidian3.Modal {
               noteCol.createSpan({ cls: "fox-tx-tag", text: t });
             });
           }
-          if (tx.tags) {
-            const tagCell = row.createSpan({ cls: "fox-tx-col-tags" });
-            tx.tags.split(",").map((s) => s.trim()).filter(Boolean).forEach((t) => {
-              tagCell.createSpan({ cls: "fox-tx-tag", text: t });
-            });
-          }
           const actions = row.createDiv({ cls: "fox-tx-actions" });
           const editBtn = actions.createEl("button", { cls: "fox-tx-action-btn fox-tx-action-edit", text: "\u270E" });
           editBtn.title = "\u7F16\u8F91";
@@ -1017,7 +982,7 @@ var FoxFinanceView = class extends import_obsidian6.ItemView {
       "\u94F6\u6CB3\u73BB\u7483\u74F6.png",
       "\u7FBD\u6BDB\u8D26\u672C.png",
       "\u661F\u6CB3\u5C0F\u8DEF.png",
-      "\u53D1\u5149\u706F\u7B3C.png",
+      "\u63D0\u706F.png",
       "\u661F\u7A7A\u65E5\u5386.png",
       "\u72FC\u5FBD\u76FE\u724C.png"
     ];
@@ -1084,7 +1049,8 @@ var FoxFinanceView = class extends import_obsidian6.ItemView {
     sectionLabel(container, "\u8D44 \u4EA7 \u661F \u56FE");
     const cardsRow = container.createEl("div", { cls: "fox-cards-row" });
     this.buildCard(cardsRow, "\u73B0\u91D1\u6D41", "cash", "\u5E7C\u82D7.png", () => {
-      return Object.entries(this.balances).filter(([_, v]) => v > 0).slice(0, 3);
+      const cashNames = new Set((this.plugin.settings?.accounts ?? []).filter((a) => a.type === "cash").map((a) => a.name));
+      return Object.entries(this.balances).filter(([name, v]) => cashNames.has(name) && v > 0).slice(0, 3);
     });
     const cashCard = cardsRow.querySelector(".fox-card-cash");
     if (cashCard) {
@@ -1104,7 +1070,7 @@ var FoxFinanceView = class extends import_obsidian6.ItemView {
     this.buildActionBtn(actionsBar, "\u67E5\u770B\u6D41\u6C34", "\u661F\u6CB3\u5C0F\u8DEF.png", false, () => {
       new FoxFinanceTxModal(this.app, this.plugin).open();
     });
-    this.buildActionBtn(actionsBar, "\u8D44\u4EA7\u66F4\u65B0", "\u53D1\u5149\u706F\u7B3C.png", false, () => {
+    this.buildActionBtn(actionsBar, "\u8D44\u4EA7\u66F4\u65B0", "\u63D0\u706F.png", false, () => {
       new FoxFinanceAdjustModal(this.app, this.plugin).open();
     });
     this.buildActionBtn(actionsBar, "\u5E74\u8F6E", "\u661F\u7A7A\u65E5\u5386.png", false, () => {
@@ -1590,15 +1556,28 @@ var FoxFinanceReviewView = class extends import_obsidian7.ItemView {
     } else if (expense > 0) {
       points.push("\u672C\u6708\u6CA1\u6709\u6536\u5165\u8BB0\u5F55\uFF0C\u652F\u51FA\u5168\u9760\u5B58\u91CF");
     }
-    for (const b of budgets) {
+    const monthlyBudgets = budgets.filter((b) => b.period === "monthly");
+    const yearlyBudgets = budgets.filter((b) => b.period === "yearly");
+    for (const b of monthlyBudgets) {
       if (b.amount <= 0)
         continue;
       const spent = this.txs.filter((t) => t.type === "expense" && t.category === b.category).reduce((s, t) => s + t.amount, 0);
       if (spent > b.amount) {
         const over = Math.round((spent - b.amount) / b.amount * 100);
         points.push(`\u300C${b.category}\u300D\u8D85\u9884\u7B97 ${over}%\uFF0C\u5B9E\u9645 \xA5${spent.toFixed(0)} / \u9884\u7B97 \xA5${b.amount}`);
-      } else if (b.amount > 0 && spent <= b.amount * 0.8) {
+      } else if (spent <= b.amount * 0.8) {
         points.push(`\u300C${b.category}\u300D\u63A7\u5236\u5728\u9884\u7B97\u7684 ${Math.round(spent / b.amount * 100)}%\uFF0C\u8868\u73B0\u4E0D\u9519 \u2705`);
+      }
+    }
+    for (const b of yearlyBudgets) {
+      if (b.amount <= 0)
+        continue;
+      const spent = (this._yearlyTxs || this.txs).filter((t) => t.type === "expense" && t.category === b.category).reduce((s, t) => s + t.amount, 0);
+      if (spent > b.amount) {
+        const over = Math.round((spent - b.amount) / b.amount * 100);
+        points.push(`\u300C${b.category}\u300D\u5E74\u5EA6\u8D85\u9884\u7B97 ${over}%\uFF0C\u5B9E\u9645 \xA5${spent.toFixed(0)} / \u9884\u7B97 \xA5${b.amount}`);
+      } else if (spent <= b.amount * 0.8) {
+        points.push(`\u300C${b.category}\u300D\u5E74\u5EA6\u63A7\u5236\u5728\u9884\u7B97\u7684 ${Math.round(spent / b.amount * 100)}%\uFF0C\u8868\u73B0\u4E0D\u9519 \u2705`);
       }
     }
     const catMap = /* @__PURE__ */ new Map();
@@ -1721,8 +1700,8 @@ ${pointsText}
     });
   }
   getLevelText() {
-    const bal = Object.values(this.txs.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0) - this.txs.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0));
-    return "\u{1F330} Lv.1";
+    const net = Object.values(this.balances).reduce((s, v) => s + v, 0);
+    return net > 5e4 ? "\u{1F333} Lv.3" : net > 1e4 ? "\u{1F331} Lv.2" : "\u{1F330} Lv.1";
   }
 };
 

@@ -224,37 +224,6 @@ export class FinanceDataLayer {
     return balances;
   }
 
-  // ─── Migration ───────────────────────────────────
-
-  /**
-   * 从 settings.financeRecords 迁移旧数据到账本
-   * @returns 迁移的记录数
-   */
-  async migrateOldData(plugin: any): Promise<number> {
-    const records = plugin.settings.financeRecords;
-    if (!Array.isArray(records) || records.length === 0) return 0;
-
-    let count = 0;
-    for (const r of records) {
-      const tx: Transaction = {
-        date: r.date || r.time || '',
-        type: r.type || 'expense',
-        amount: Number(r.amount) || 0,
-        account: r.account || '现金',
-        category: r.category || '其他',
-        subcategory: r.subcategory || '',
-        note: r.note || r.description || '',
-      };
-      if (!tx.date) continue;
-      await this.appendToLedger(tx);
-      count++;
-    }
-
-    plugin.settings.financeRecords = [];
-    await plugin.saveSettings();
-    return count;
-  }
-
   // ─── Private: file helpers ───────────────────────
 
   private async readLedgerFile(path: string): Promise<Transaction[]> {

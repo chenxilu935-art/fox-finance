@@ -48,7 +48,7 @@ export class FoxFinanceView extends ItemView {
     const iconNames = [
       '星空之狼.png', '幼苗.png', '财富树.png', '星辰水晶球.png',
       '财富圆盘.png', '银河玻璃瓶.png', '羽毛账本.png', '星河小路.png',
-      '发光灯笼.png', '星空日历.png', '狼徽盾牌.png',
+      '提灯.png', '星空日历.png', '狼徽盾牌.png',
     ];
     await Promise.all(iconNames.map(async (name) => {
       if (!this.iconUrls[name]) {
@@ -136,7 +136,8 @@ export class FoxFinanceView extends ItemView {
     const cardsRow = container.createEl('div', { cls: 'fox-cards-row' });
 
     this.buildCard(cardsRow, '现金流', 'cash', '幼苗.png', () => {
-      return Object.entries(this.balances).filter(([_, v]) => v > 0).slice(0, 3);
+      const cashNames = new Set((this.plugin.settings?.accounts ?? []).filter(a => a.type === 'cash').map(a => a.name));
+      return Object.entries(this.balances).filter(([name, v]) => cashNames.has(name) && v > 0).slice(0, 3);
     });
     // 现金流卡片点击弹窗查看全部账户
     const cashCard = cardsRow.querySelector('.fox-card-cash') as HTMLElement;
@@ -161,7 +162,7 @@ export class FoxFinanceView extends ItemView {
     this.buildActionBtn(actionsBar, '查看流水', '星河小路.png', false, () => {
       new FoxFinanceTxModal(this.app as any, this.plugin).open();
     });
-    this.buildActionBtn(actionsBar, '资产更新', '发光灯笼.png', false, () => {
+    this.buildActionBtn(actionsBar, '资产更新', '提灯.png', false, () => {
       new FoxFinanceAdjustModal(this.app as any, this.plugin).open();
     });
     this.buildActionBtn(actionsBar, '年轮', '星空日历.png', false, () => {
