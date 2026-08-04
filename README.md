@@ -4,10 +4,16 @@
 > 不是传统记账软件——是陪伴你长期成长的财富森林。
 
 ## 预览
+
 <img width="2159" height="1314" alt="image" src="https://github.com/user-attachments/assets/181f5bf7-1ad7-45f5-b94e-9274a03ba874" />
+<img width="2092" height="1257" alt="image" src="https://github.com/user-attachments/assets/e7b7333d-c233-48cf-8c8d-6ab5a7fb042c" />
 <img width="2094" height="1310" alt="image" src="https://github.com/user-attachments/assets/a99a5ca1-856a-441a-a021-5bfbc65a67cb" />
 <img width="1049" height="656" alt="image" src="https://github.com/user-attachments/assets/480a33af-c377-4adb-97f4-a756d96ef330" />
 <img width="1049" height="653" alt="image" src="https://github.com/user-attachments/assets/cb62220d-b27a-4cca-9960-addc878cfde4" />
+<img width="826" height="583" alt="image" src="https://github.com/user-attachments/assets/10e1cb33-4521-4c24-aaba-6a61f38ef29a" />
+<img width="1655" height="1164" alt="image" src="https://github.com/user-attachments/assets/442bef0e-ee13-4085-a305-22a900c0767b" />
+<img width="827" height="583" alt="image" src="https://github.com/user-attachments/assets/53bc9814-099d-45d0-9a6a-d137f1913778" />
+<img width="1271" height="868" alt="image" src="https://github.com/user-attachments/assets/bcd584dd-9c30-4914-88c9-9483f5e3930d" />
 
 ---
 
