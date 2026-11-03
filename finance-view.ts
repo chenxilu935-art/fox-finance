@@ -56,12 +56,20 @@ export class FoxFinanceView extends ItemView {
       }
     }));
 
-    // 加载数据和背景
+    // 加载数据；背景只在视图第一次打开时随机选择，之后保持稳定
     await this.loadData();
-    this.bgUrl = await this.plugin.getRandomBgUrl();
+    if (!this.bgUrl) {
+      this.bgUrl = await this.plugin.getRandomBgUrl();
+    }
 
     this.render();
     this.loadedIcons = true;
+  }
+
+  /** 设置页更换背景主题时调用：强制重新随机一张背景 */
+  async refreshBackground() {
+    this.bgUrl = '';
+    await this.refresh();
   }
 
   private async loadData() {

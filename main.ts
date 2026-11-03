@@ -148,10 +148,16 @@ export default class FoxFinancePlugin extends Plugin {
   }
 
   openQuickAddModal() {
-    new FoxFinanceModal(this.app, this, () => {
-      const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_FINANCE).first();
-      if (leaf?.view instanceof FoxFinanceView) leaf.view.refresh();
-    }).open();
+    // 保存后由数据层的 fox-finance:updated 事件统一触发视图刷新，避免重复刷新
+    new FoxFinanceModal(this.app, this).open();
+  }
+
+  /** 背景设置变更后，让已打开的视图重新随机背景（未打开时下次打开自然生效） */
+  async refreshViewBackgrounds() {
+    const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_FINANCE).first();
+    if (leaf?.view instanceof FoxFinanceView) await leaf.view.refreshBackground();
+    const reviewLeaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_REVIEW).first();
+    if (reviewLeaf?.view instanceof FoxFinanceReviewView) await reviewLeaf.view.refreshBackground();
   }
 
   // ─── Assets ─────────────────────────────────────
@@ -269,6 +275,7 @@ class FoxFinanceSettingTab extends PluginSettingTab {
           this.p.settings.bgTheme = v as 'galaxy' | 'glasshouse' | 'custom';
           await this.p.saveData(this.p.settings);
           this.display(); // 刷新页面，显示/隐藏自定义背景列表
+          await this.p.refreshViewBackgrounds();
           this.p.activateView();
         });
       });

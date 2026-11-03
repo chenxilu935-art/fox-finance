@@ -992,9 +992,16 @@ var FoxFinanceView = class extends import_obsidian6.ItemView {
       }
     }));
     await this.loadData();
-    this.bgUrl = await this.plugin.getRandomBgUrl();
+    if (!this.bgUrl) {
+      this.bgUrl = await this.plugin.getRandomBgUrl();
+    }
     this.render();
     this.loadedIcons = true;
+  }
+  /** 设置页更换背景主题时调用：强制重新随机一张背景 */
+  async refreshBackground() {
+    this.bgUrl = "";
+    await this.refresh();
   }
   async loadData() {
     const d = /* @__PURE__ */ new Date();
@@ -1247,8 +1254,15 @@ var FoxFinanceReviewView = class extends import_obsidian7.ItemView {
     if (!container)
       return;
     await this.loadData();
-    this.bgUrl = await this.plugin.getRandomBgUrl();
+    if (!this.bgUrl) {
+      this.bgUrl = await this.plugin.getRandomBgUrl();
+    }
     this.render();
+  }
+  /** 设置页更换背景主题时调用：强制重新随机一张背景 */
+  async refreshBackground() {
+    this.bgUrl = "";
+    await this.refresh();
   }
   async loadData() {
     this.txs = await this.dl.readLedger(this.year, this.month);
@@ -1820,11 +1834,16 @@ var FoxFinancePlugin = class extends import_obsidian8.Plugin {
     }
   }
   openQuickAddModal() {
-    new FoxFinanceModal(this.app, this, () => {
-      const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_FINANCE).first();
-      if (leaf?.view instanceof FoxFinanceView)
-        leaf.view.refresh();
-    }).open();
+    new FoxFinanceModal(this.app, this).open();
+  }
+  /** 背景设置变更后，让已打开的视图重新随机背景（未打开时下次打开自然生效） */
+  async refreshViewBackgrounds() {
+    const leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_FINANCE).first();
+    if (leaf?.view instanceof FoxFinanceView)
+      await leaf.view.refreshBackground();
+    const reviewLeaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_FOX_REVIEW).first();
+    if (reviewLeaf?.view instanceof FoxFinanceReviewView)
+      await reviewLeaf.view.refreshBackground();
   }
   // ─── Assets ─────────────────────────────────────
   /** 读取 Asset 目录下文件，返回 blob:// URL */
@@ -1922,6 +1941,7 @@ var FoxFinanceSettingTab = class extends import_obsidian8.PluginSettingTab {
         this.p.settings.bgTheme = v;
         await this.p.saveData(this.p.settings);
         this.display();
+        await this.p.refreshViewBackgrounds();
         this.p.activateView();
       });
     });

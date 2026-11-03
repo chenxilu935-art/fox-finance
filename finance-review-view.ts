@@ -46,8 +46,17 @@ export class FoxFinanceReviewView extends ItemView {
     if (!container) return;
 
     await this.loadData();
-    this.bgUrl = await this.plugin.getRandomBgUrl();
+    // 背景只在视图第一次打开时随机选择，之后保持稳定
+    if (!this.bgUrl) {
+      this.bgUrl = await this.plugin.getRandomBgUrl();
+    }
     this.render();
+  }
+
+  /** 设置页更换背景主题时调用：强制重新随机一张背景 */
+  async refreshBackground() {
+    this.bgUrl = '';
+    await this.refresh();
   }
 
   private async loadData() {
